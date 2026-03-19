@@ -1,0 +1,29 @@
+{
+  "_comment": "Service registry — add your own services here. Each entry shows as a card in the Services panel.",
+  "services": [
+    {
+      "name": "ClawHQ",
+      "url": "http://localhost:8902",
+      "mode": "local",
+      "icon": "🐾",
+      "category": "Monitor",
+      "description": "Agent dashboard (this page)"
+    },
+    {
+      "name": "Example Dashboard",
+      "url": "https://dashboard.yourdomain.com",
+      "mode": "cf-tunnel",
+      "icon": "📊",
+      "category": "Monitor",
+      "description": "Replace with your own service"
+    },
+    {
+      "name": "Home Assistant",
+      "url": "https://ha.yourdomain.com",
+      "mode": "relay46",
+      "icon": "🏠",
+      "category": "Smart Home",
+      "description": "Smart home automation"
+    }
+  ]
+}

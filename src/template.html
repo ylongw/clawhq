@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐾 ClawHQ</title>
+<style>/* __STYLE__ */</style>
+</head>
+<body>
+<div class="bg-noise"></div>
+
+<!-- ─── HEADER ─── -->
+<header class="header">
+  <div class="header-brand">🐾 ClawHQ</div>
+  <div class="header-status">
+    <div class="header-status-dot online" id="headerDot"></div>
+    <span class="header-status-text" id="headerStatusText">Agent Online</span>
+  </div>
+  <div class="header-right">
+    <span id="lastUpdateText">Loading…</span>
+    <button class="glass-switch" data-glass="light" onclick="setGlassIntensity('light')">L</button>
+    <button class="glass-switch active" data-glass="medium" onclick="setGlassIntensity('medium')">M</button>
+    <button class="glass-switch" data-glass="heavy" onclick="setGlassIntensity('heavy')">H</button>
+    <div class="live-dot"></div>
+  </div>
+</header>
+
+<!-- ─── DASHBOARD ─── -->
+<div class="dashboard">
+
+  <!-- SECTION 1: Hero Stats -->
+  <div class="hero-grid">
+    <div class="hero-card">
+      <div class="hero-label">Status</div>
+      <div class="hero-value status-online" id="heroStatus">ONLINE</div>
+      <div class="hero-sub" id="heroModel">—</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">Active Sessions</div>
+      <div class="hero-value blue" id="heroSessions">0</div>
+      <div class="hero-sub">connected links</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">Cron Jobs</div>
+      <div class="hero-value orange" id="heroCron">0</div>
+      <div class="hero-sub">scheduled tasks</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">Uptime</div>
+      <div class="hero-value green" id="heroUptime" style="font-size:38px;letter-spacing:-1px;">—</div>
+      <div class="hero-sub">PID <span id="heroPid">—</span></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Resources + Sessions -->
+  <div class="two-col">
+
+    <!-- Left: System Resources -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">System Resources</div>
+      </div>
+
+      <!-- CPU Gauge SVG -->
+      <div class="gauge-svg-wrap">
+        <svg width="160" height="100" viewBox="0 0 160 100">
+          <!-- Track: half-circle, cx=80, cy=90, r=70, arc from 180° to 0° -->
+          <path class="gauge-track"
+            d="M 16 90 A 64 64 0 0 1 144 90"
+          />
+          <!-- Arc fill -->
+          <path class="gauge-arc" id="cpuArcPath"
+            d="M 16 90 A 64 64 0 0 1 144 90"
+            stroke-dasharray="201 201"
+            stroke-dashoffset="201"
+          />
+          <text class="gauge-pct" id="cpuGaugePct" x="80" y="80">0%</text>
+          <text class="gauge-sub-text" x="80" y="97" style="font-size:10px;fill:var(--text-tertiary)">CPU Usage</text>
+        </svg>
+      </div>
+
+      <div class="resource-rows">
+        <!-- Memory -->
+        <div class="resource-row">
+          <div class="resource-header">
+            <span class="resource-label">Memory</span>
+            <span class="resource-value" id="memValueTxt">— / — GB</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="memFill" style="width:0%"></div>
+          </div>
+        </div>
+        <!-- Disk -->
+        <div class="resource-row">
+          <div class="resource-header">
+            <span class="resource-label">Disk</span>
+            <span class="resource-value" id="diskValueTxt">— / —</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="diskFill" style="width:0%"></div>
+          </div>
+        </div>
+        <!-- Load avg -->
+        <div class="load-avg-row">
+          <span class="load-avg-label">Load Average</span>
+          <span class="load-avg-value" id="loadAvgTxt">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Active Sessions -->
+    <div class="card">
+      <div class="card-header" style="padding-bottom:12px">
+        <div class="card-title">Active Sessions</div>
+        <div class="card-badge" id="sessCount">0</div>
+      </div>
+      <div class="scrollable">
+        <ul class="session-list" id="sessionList">
+          <li><div class="empty-state">No sessions</div></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 3: Sub-agents -->
+  <div class="card">
+    <div class="card-header" style="padding-bottom:12px">
+      <div class="card-title">Sub-agents</div>
+      <div class="card-badge" id="saCount">0</div>
+    </div>
+    <div id="subagentsWrap">
+      <div class="empty-state">No active sub-agents</div>
+    </div>
+  </div>
+
+  <!-- Coding Agents (conditional) -->
+  <div class="card" id="codingAgentsCard" style="display:none">
+    <div class="card-header" style="padding-bottom:12px">
+      <div class="card-title">Coding Agents</div>
+      <div class="card-badge" id="caCount">0</div>
+    </div>
+    <div id="codingAgentsList"></div>
+  </div>
+
+  <!-- SECTION 4: Cron + Activity -->
+  <div class="two-col">
+
+    <!-- Left: Cron Jobs -->
+    <div class="card">
+      <div class="card-header" style="padding-bottom:12px">
+        <div class="card-title">Cron Jobs</div>
+        <div class="card-badge" id="cronCount">0</div>
+      </div>
+      <div class="scrollable" id="cronList">
+        <div class="empty-state">No scheduled tasks</div>
+      </div>
+    </div>
+
+    <!-- Right: Recent Activity -->
+    <div class="card">
+      <div class="card-header" style="padding-bottom:12px">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-badge" id="actCount">0</div>
+      </div>
+      <div class="scrollable" id="activityFeed">
+        <div class="empty-state">Listening…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 5: Skills -->
+  <div class="card">
+    <div class="card-header" style="padding-bottom: 12px; align-items: center;">
+      <div class="card-title">Skills</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="card-badge" id="skillCount">0</span>
+        <button class="skills-toggle-btn" id="skillToggleBtn" onclick="toggleMissingSkills()">Show Missing</button>
+      </div>
+    </div>
+    <div class="skills-grid" id="skillsGrid">
+      <div class="empty-state" style="grid-column:1/-1">Loading skills…</div>
+    </div>
+  </div>
+
+
+<!-- SECTION 6: NPM Global Tools -->
+  <div class="card">
+    <div class="card-header" style="padding-bottom: 12px; align-items: center;">
+      <div class="card-title">📦 NPM Global Tools</div>
+      <span class="card-badge" id="npmToolCount">0</span>
+    </div>
+    <div class="npm-tools-grid" id="npmToolsGrid">
+      <div class="empty-state">Loading…</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: MCP Servers -->
+  <div class="card">
+    <div class="card-header" style="padding-bottom: 12px; align-items: center;">
+      <div class="card-title">🔌 MCP Servers</div>
+      <span class="card-badge" id="mcpCount">0</span>
+    </div>
+    <div class="mcp-grid" id="mcpGrid">
+      <div class="empty-state">Loading…</div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: Services Navigation -->
+  <div class="card">
+    <div class="card-header" style="padding-bottom: 12px; align-items: center;">
+      <div class="card-title">🌐 Services</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="card-badge" id="svcCount">0</span>
+        <span class="svc-legend"><span class="svc-badge svc-cf">CF Tunnel</span></span>
+        <span class="svc-legend"><span class="svc-badge svc-relay">relay46</span></span>
+      </div>
+    </div>
+    <div class="svc-grid" id="svcGrid">
+      <div class="empty-state">Loading…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer class="footer">
+  <span>ClawHQ v2 · Updated <span id="footerTime">—</span></span>
+</footer>
+
+<script>// __SCRIPT__
+</script>
+</body>
+</html>
