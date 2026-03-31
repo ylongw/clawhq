@@ -38,7 +38,8 @@ function formatSessionLabel(key, meta = null) {
 
 function parseActiveSessions(rawJson, sessionsMetaIndex = { byKey: {}, bySessionId: {} }) {
   let data = null;
-  try { data = JSON.parse(rawJson); } catch { return []; }
+  // Strip [openclaw] log prefix lines and control characters
+  try { data = JSON.parse(rawJson.replace(/^\[openclaw\][^\n]*\n?/gm, '').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '').trim()); } catch { return []; }
   const items = Array.isArray(data?.sessions) ? data.sessions : [];
   const { byKey, bySessionId } = sessionsMetaIndex;
   const seenSessionIds = new Set();

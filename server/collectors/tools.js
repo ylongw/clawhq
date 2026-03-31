@@ -5,7 +5,9 @@ const { HOME, execCmd } = require('../utils');
 
 function getSkills() {
   try {
-    const raw = execCmd('openclaw skills list --json 2>/dev/null', 15000);
+    const rawAll = execCmd('openclaw skills list --json 2>&1', 15000);
+    // Strip log prefix lines like "[openclaw] log file size cap reached..."
+    const raw = rawAll.replace(/^\[openclaw\][^\n]*\n?/gm, '').trim();
     const data = JSON.parse(raw);
     return (data.skills || []).map(s => ({
       name: s.name,
