@@ -18,6 +18,14 @@
       "description": "Replace with your own service"
     },
     {
+      "name": "Photos",
+      "url": "https://photos.yourdomain.com",
+      "mode": "cf-tunnel",
+      "icon": "📷",
+      "category": "Media",
+      "description": "Photo library"
+    },
+    {
       "name": "Home Assistant",
       "url": "https://ha.yourdomain.com",
       "mode": "relay46",
