@@ -3,7 +3,13 @@ logs/
 node_modules/
 .DS_Store
 
-# Personal deployment config — do not commit
+# Personal deployment config / agent notes
 data/services.json.local
 CLAUDE.md
+
+# Local backup files
+*.bak
+*.bak2
+*.bak3
+*.bak_pre_refactor
 index.html.bak*
